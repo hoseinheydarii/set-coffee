@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import styles from "./Nabvar.module.css";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,8 +8,24 @@ import { IoIosArrowDown } from "react-icons/io";
 import { FaRegHeart, FaShoppingCart } from "react-icons/fa";
 
 const Navbar = () => {
+  const [fixTop, setFixTop] = useState(false);
+
+  useEffect(() => {
+    const fixNavbarToTop = () => {
+      const currentScroll = window.pageYOffset;
+      if (currentScroll > 150) {
+        setFixTop(true);
+      } else {
+        setFixTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", fixNavbarToTop);
+
+    return () => window.removeEventListener("scroll", fixNavbarToTop);
+  }, []);
   return (
-    <nav className={styles.navbar}>
+    <nav className={fixTop ? styles.navbar_fixed : styles.navbar}>
       <main>
         <div>
           <Link href="/">
