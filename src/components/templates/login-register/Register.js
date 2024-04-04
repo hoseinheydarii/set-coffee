@@ -5,23 +5,58 @@ import Sms from "./Sms";
 const Register = ({ showloginForm }) => {
   const [isRegisterWithPass, setIsRegisterWithPass] = useState(false);
   const [isRegisterWithOtp, setIsRegisterWithOtp] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const hideOtpForm = () => setIsRegisterWithOtp(false);
+
+  const signUp = async () => {
+    const user = { name, email, phone, password };
+
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+
+    console.log(res);
+    if (res.status === 201) {
+      swal({
+        title: "ثبت نام با موفقیت انجام شد",
+        icon: "success",
+        buttons: "ورود به پنل کاربری",
+      });
+    }
+  };
 
   return (
     <>
       {!isRegisterWithOtp ? (
         <>
           <div className={styles.form}>
-            <input className={styles.input} type="text" placeholder="نام" />
             <input
               className={styles.input}
               type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="نام"
+            />
+            <input
+              className={styles.input}
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               placeholder="شماره موبایل  "
             />
             <input
               className={styles.input}
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="ایمیل (دلخواه)"
             />
 
@@ -29,6 +64,8 @@ const Register = ({ showloginForm }) => {
               <input
                 className={styles.input}
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="رمز عبور"
               />
             )}
@@ -43,7 +80,13 @@ const Register = ({ showloginForm }) => {
 
             <button
               style={{ marginTop: ".7rem" }}
-              onClick={() => setIsRegisterWithPass(true)}
+              onClick={() => {
+                if (isRegisterWithPass) {
+                  signUp();
+                } else {
+                  setIsRegisterWithPass(true);
+                }
+              }}
               className={styles.btn}
             >
               ثبت نام با رمزعبور
